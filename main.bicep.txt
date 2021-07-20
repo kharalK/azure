@@ -1,0 +1,40 @@
+resource vm_small 'Microsoft.Compute/virtualMachines@2019-07-01' = {
+  name: vmName
+  location: location
+  zones: [
+    '1'
+  ]
+  properties: {
+    hardwareProfile: {
+      vmSize: vmSize
+    }
+    storageProfile: {
+      osDisk: {
+        createOption: 'FromImage'
+        managedDisk: {
+          storageAccountType: osDiskType
+        }
+      }
+      imageReference: {
+        publisher: 'Canonical'
+        offer: 'UbuntuServer'
+        sku: ubuntuOsVersion
+        version: 'latest'
+      }
+    }
+    osProfile: {
+      computerName: vmName
+      adminUsername: username
+      adminPassword: password
+    }
+    networkProfile: {
+      networkInterfaces: [
+        {
+          id: nic.outputs.nicId
+        }
+      ]
+    }
+  }
+}
+
+output id string = vm_small.id
